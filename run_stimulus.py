@@ -94,7 +94,6 @@ def main():
             TRIAL TYPE   :      DESCRIPTION
             stare        :      pt stares at the target in the centre of the screen for duration      
             pursuit      :      pt follows target with eyes as it moves left / right for duration
-            far          :      pt looks at target at each of the extremities
             vor          :      pt locks gaze and rotates head. will almost certainly need demonstration
             jump         :      pt follows target. it will jump left / right.
             brightness   :      pt looks at target and holds gaze for few seconds. brightness inverts.
