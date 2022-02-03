@@ -1,0 +1,6 @@
+name: stroke
+dependencies:
+  - python=3.9.7
+  - pip
+  - pip:
+    - r requirements.txt
