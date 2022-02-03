@@ -1,19 +1,14 @@
+# Copyright 2022
+# Author: scott.allan.stone@gmail.com (Scott Stone)
+
 from io import TextIOWrapper
-import pygame
+import pygame, os, random
 from pygame.locals import *
 from pylsl import StreamOutlet, StreamInfo
 from datetime import datetime
-import os
-import random
-import socket
 import numpy as np
 from time import sleep
-from LabRecorderCLI import LabRecorderCLI
-
-'''
-TODO: 
- - Fix the way we call LabRecorder. seems very janky and not very reliable.
-'''
+import liesl
 
 """
 Main function for the program
@@ -47,7 +42,6 @@ def main():
     BRIGHTNESS_TRIAL_LENGTH = 10 # This can be shorter than the main trial length
     SCREEN_CENTRE = (WIDTH/2, HEIGHT/2)
     STIM_ORDER = ['stare', 'pursuit', 'vor', 'jump', 'brightness']
-    #STIM_ORDER = ['brightness', 'vor']
     
     '''
     Main execution loop
@@ -462,19 +456,16 @@ if __name__ == '__main__':
     print("Created subject folder " + subject_name + "/ in data/")
 
     # LSL outlet
-    info = StreamInfo('Stimulus_Markers', 'Markers', 1, 0, 'string', 'stim-prog-1')
+    info = StreamInfo('Stimulus_Markers', 'Marker', 1, 0, 'string', 'stim-prog-1')
     outlet = StreamOutlet(info)
     print("Setting up LSL stream ..")
 
-    # Name of participant
-    wd = os.getcwd() + "\\data\\" + subject_name + "\\" + subject_name + ".xdf "
-    cli_arg = "\"name=\"\"{0}\"\"\"".format("Stimulus_Markers")
-    lsl_args = wd + cli_arg
-    streams = "type='Markers' type'Gaze'"
+    # Using LieSL to record XDF data
+    r = liesl.Recorder()
 
-    LR = LabRecorderCLI("./LabRecorderCLI.exe")
-    LR.start_recording(filename=wd, streams=streams)  
-
+    # Change the save location to be in this folder
+    r.bind([{"type":"Gaze"},{"type":"Marker"}])
+    r.start_recording(filename="data/" + subject_name + "/" + subject_name + ".xdf")
     print("Started recording on LabRecorder ...")
 
     # Check if consumer is connected
@@ -490,5 +481,5 @@ if __name__ == '__main__':
     
     # Stop recording
     print("Stopping LSL recording ...")
-    LR.stop_recording()
+    r.stop_recording()
     sleep(0.5)
