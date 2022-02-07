@@ -299,17 +299,12 @@ def main():
             '''       
             if stim == 'vor':
                 # NOTE: Patient keeps gaze steady on target, rotates head while maintaining fixation. Same as 'stare'
-                #VOR_TIME = 20 # seconds
-                #VOR_FRAMES = VOR_TIME * FPS
-
+                
                 print(stim)
                 outlet.push_sample([stim])
                 #create_data_csv(stim)
                 draw_fixation_cross()
                 pygame.display.flip()
-
-                #for _ in range(0, VOR_FRAMES):
-                    #clock.tick(FPS)
                 
                 # The user picks how long they want to do this one
                 wait_for_space()
@@ -421,6 +416,7 @@ def create_data_csv(name):
     '''
     Create the individual CSV for each trial - just named after the phase the pt is currently on
     '''
+    # NOTE: this is deprecated for the time being, but being left in the file just in case it is needed
     header = ('confidence', 'norm_pos_x', 'norm_pos_y', 
               'gaze_point_3d_x', 'gaze_point_3d_y', 'gaze_point_3d_z',
               'eye_0_center_x', 'eye_0_center_y', 'eye_0_center_z', 
@@ -439,6 +435,7 @@ def write_data_csv(file: TextIOWrapper, data):
     '''
     Convert the data in the LSL inlet to a CSV friendly string format and write to file
     '''
+    # NOTE: this is deprecated for the time being, but being left in the file just in case it is needed
     file.write(",".join(map(str, data)))
     file.write("\n")
     return 1
@@ -447,7 +444,7 @@ if __name__ == '__main__':
     # Do some house cleaning around the current subject
     # Create their folder in the "data/" directory
     if not os.path.exists('data'):
-        print("Warning! No data folder found. Creating one ...")
+        print("No data folder found. Creating one ...")
         os.mkdir("data")
 
     # Generate a subject name based on today's date & time
