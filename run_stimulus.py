@@ -2,7 +2,7 @@
 # Author: scott.allan.stone@gmail.com (Scott Stone)
 
 from io import TextIOWrapper
-import pygame, os, random
+import pygame, os
 from pygame.locals import *
 from pylsl import StreamOutlet, StreamInfo
 from datetime import datetime
@@ -10,12 +10,13 @@ import numpy as np
 from time import sleep
 import liesl
 
-"""
-Main function for the program
-"""
 DEBUG_FLAG = False
 def main():
-    random.seed()
+    '''
+    Main function for the program
+    '''
+    # Seed the random number generator
+    np.random.seed()
 
     # Setup the outgoing LSL stream - this is the flags stream to mark which task is being performed
     outlet.push_sample(['stimulus_begin'])
@@ -330,9 +331,8 @@ def main():
                 MAX_S = 1.5
                 order = ('cross', 'left', 'cross', 'right', 'cross', 'left', 'cross', 'right', 'cross', 'left', 'cross', 'right', 'cross', 'left', 'cross', 'right', 'cross')
                 N_JUMPS = len(order)
-                target_times = [random.uniform(MIN_S, MAX_S) for i in range(N_JUMPS)]
+                target_times = [np.random.uniform(MIN_S, MAX_S) for i in range(N_JUMPS)]
                 target_times[0] = 3 # first one should be 3s
-                #target_times = (3, random.uniform(MIN_S, MAX_S), random.uniform(MIN_S, MAX_S), random.uniform(MIN_S, MAX_S), random.uniform(MIN_S, MAX_S), random.uniform(MIN_S, MAX_S), random.uniform(MIN_S, MAX_S), random.uniform(MIN_S, MAX_S), random.uniform(MIN_S, MAX_S), random.uniform(MIN_S, MAX_S), random.uniform(MIN_S, MAX_S), random.uniform(MIN_S, MAX_S), random.uniform(MIN_S, MAX_S), random.uniform(MIN_S, MAX_S), random.uniform(MIN_S, MAX_S))                
                 # At the beginning, there is a 3s buffer time to when the target first appears on the left. 
                 # They will need to fixate on the target cross, and a dot will show up.
                 # After that the target will appear to 2s, then the subject shifts back to the centre cross for ~3s.
@@ -450,6 +450,7 @@ if __name__ == '__main__':
         print("Warning! No data folder found. Creating one ...")
         os.mkdir("data")
 
+    # Generate a subject name based on today's date & time
     subject_name = generate_subject_name(datetime.now())
     os.mkdir("data/" + subject_name)
     print("Created subject folder " + subject_name + "/ in data/")
