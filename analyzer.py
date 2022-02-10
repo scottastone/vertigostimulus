@@ -2,7 +2,6 @@ import liesl
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.patches import Ellipse
-import time
 
 class Analyzer:
     def __init__(self, 
@@ -18,7 +17,7 @@ class Analyzer:
         self.phases = phases # default to None
         self.dpi = dpi
 
-        self._pull_data()
+        self._pull_marker_data()
         self._find_start_end_phase_indices()
         self._convert_idx_to_timestamps()
         self._get_gaze_data()
@@ -29,13 +28,13 @@ class Analyzer:
         # Should contain: markers, gaze, timestamps, phase_starts, phase_ends
         return NotImplementedError
 
-    def _pull_data(self) -> None:
+    def _pull_marker_data(self) -> None:
         """Pull the data from the file and store it
         """
         self.markers = self.data[self.stimulus_marker_name]
         if self.phases is None:
             self.phases = ['stare','pursuit','vor', 'jump', 'brightness']
-        self.phase_starts = ['stare','pursuit','vor', 'jump', 'brightness']
+        self.phase_starts = self.phases.copy()
         self.phase_ends = [phase + '_end' for phase in self.phase_starts]
 
     def _find_start_end_phase_indices(self) -> None:
