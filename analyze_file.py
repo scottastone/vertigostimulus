@@ -12,7 +12,7 @@ def process(file: str):
     analyzer.calculate_dispersion()
     analyzer.calculate_velocity()
     analyzer.plot()
-    print(f"\t\t{file}: took: {time.perf_counter() - start_time:.2f}s")
+    print(f"\t{file}: took: {time.perf_counter() - start_time:.2f}s")
 
 def main():
     pt_files = glob('data/pt*/*.xdf')

@@ -13,7 +13,7 @@ class Analyzer:
         self.file = file
         self.stimulus_marker_name = stimulus_marker_name
         self.gaze_name = gaze_name
-        self.data = liesl.XDFFile(file)
+        self.data = liesl.XDFFile(file, verbose=True) # verbose is broken
         self.phases = phases # default to None
         self.dpi = dpi
 
