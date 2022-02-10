@@ -1,8 +1,8 @@
 import liesl
 import numpy as np
 import matplotlib.pyplot as plt
-from tqdm import tqdm
 from matplotlib.patches import Ellipse
+import time
 
 class Analyzer:
     def __init__(self, 
@@ -25,6 +25,8 @@ class Analyzer:
         self._get_gaze_by_phase()
 
     def _verify_integrity(self) -> None:
+        # TODO: Verify that the data is correct
+        # Should contain: markers, gaze, timestamps, phase_starts, phase_ends
         return NotImplementedError
 
     def _pull_data(self) -> None:
@@ -94,16 +96,14 @@ class Analyzer:
     def calculate_distance(self) -> None:
         """Calculate the distance between gaze data for each phase
         """
-
-        # Function that calculates the distance between two points
-        def _distance(x1, y1, x2, y2):
+        def dist(x1, y1, x2, y2):
             return np.sqrt((x2 - x1)**2 + (y2 - y1)**2)
 
         self.distances = []
         for gaze_data in self.gaze_data:
             distance = 0
             for gaze_idx in range(len(gaze_data) - 1):
-                distance += _distance(gaze_data[gaze_idx, 0], gaze_data[gaze_idx, 1],
+                distance += dist(gaze_data[gaze_idx, 0], gaze_data[gaze_idx, 1],
                                       gaze_data[gaze_idx + 1, 0], gaze_data[gaze_idx + 1, 1])
             self.distances.append(distance)
 
@@ -136,7 +136,7 @@ class Analyzer:
     def plot(self, save=True, show=False) -> None:
         """Plot gaze data for each phase (and save it if wanted)
         """
-        for gaze_data, phase in tqdm(zip(self.gaze_data, self.phases), total=len(self.phases)):
+        for gaze_data, phase in zip(self.gaze_data, self.phases):
             plt.plot(gaze_data[:, 0], gaze_data[:, 1], label=phase)
             plt.title(phase)
             if save is True:
