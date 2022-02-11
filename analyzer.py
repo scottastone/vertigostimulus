@@ -119,14 +119,14 @@ class Analyzer:
 
         # Draw ellipsoid of the dispersion
         plt.figure()
-        plt.title("Dispersion of Stare data")
+        plt.title(f"Dispersion of {phase} data")
         plt.plot(gaze[:, 0], gaze[:, 1])
         plt.plot(self.mean_gaze[0], self.mean_gaze[1], '.k')
         ellipse = Ellipse((self.mean_gaze), self.dispersion_x, self.dispersion_y, fill=False, color='r')
         plt.gca().add_patch(ellipse)
 
         if save is True:
-            plt.savefig(f'{self.file[:-4]}_stare_dispersion.png', dpi=self.dpi)
+            plt.savefig(f'{self.file[:-4]}_{phase}_dispersion.png', dpi=self.dpi)
         if show is True:
             plt.show()
 
@@ -143,3 +143,12 @@ class Analyzer:
             if show is True:
                 plt.show()
             plt.clf()
+    
+    def analyze(self) -> None:
+        """Simple alias to run all of the calculations and plotting commands, since this 
+           is the most common use case.
+        """
+        self.calculate_dispersion()
+        self.calculate_distance()
+        self.calculate_velocity()
+        self.plot()

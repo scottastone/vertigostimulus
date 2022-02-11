@@ -9,6 +9,7 @@ from datetime import datetime
 import numpy as np
 from time import sleep
 import liesl
+from sys import exit
 
 DEBUG_FLAG = False
 def main():
@@ -29,7 +30,7 @@ def main():
     screen = pygame.display.set_mode(size=size, flags=pygame.FULLSCREEN | pygame.HWSURFACE) # 
     pygame.mouse.set_visible(False)
     pygame.display.flip()
-    pygame.display.set_caption("Stimulus Presentation")
+    pygame.display.set_caption("Stimulus")
     surface = pygame.Surface((WIDTH,HEIGHT), pygame.SRCALPHA) # For drawing transparent circles
     FPS = 60 
     clock = pygame.time.Clock()
@@ -276,11 +277,11 @@ def main():
                     Animate the dot
                     '''
                     for f in range(0, TRAVEL_FRAMES):
-                            curr_pos = (int(pos[0][f]), int(pos[1][f]))
-                            pygame.draw.circle(screen, (255,255,255), curr_pos, TARG_SIZE, 0)
-                            pygame.display.flip()
-                            clear_screen()
-                            clock.tick(FPS)
+                        curr_pos = (int(pos[0][f]), int(pos[1][f]))
+                        pygame.draw.circle(screen, (255,255,255), curr_pos, TARG_SIZE, 0)
+                        pygame.display.flip()
+                        clear_screen()
+                        clock.tick(FPS)
 
                     # Check if we should hold
                     if HOLD_FLAG is True:
@@ -295,7 +296,6 @@ def main():
         
             '''
             VOR condition
-            DONE for now
             '''       
             if stim == 'vor':
                 # NOTE: Patient keeps gaze steady on target, rotates head while maintaining fixation. Same as 'stare'
@@ -311,10 +311,10 @@ def main():
 
             '''
             Jump condition
-            DONE for now
             '''
             if stim == 'jump':
-                # NOTE: Target appears on left, then disappears and reappears on the right.
+                # NOTE: Target appears on left, then disappears and reappears on the right. This is statically set, but
+                #  the amount of time between the jumps is dynamic and determined at runtime.
                 
                 print(stim)
                 outlet.push_sample([stim])
@@ -359,7 +359,6 @@ def main():
             
             '''
             Brightness condition
-            DONE
             '''
             if stim == 'brightness':
                 print(stim)
@@ -391,13 +390,13 @@ def main():
             pygame.display.flip()
             outlet.push_sample([stim + "_end"])
             wait_for_space()
-
-        # Kill the program
+        
+        # NOTE: once we get here, we've finished the experiment.
         RUNNING = False
 
 def wait_for_space():
     ''' 
-    Simply wait for the user to press the spacebar before continuing.
+    Wait for the user to press the spacebar before continuing.
     Used between trials.
     '''
     KEY_NOT_PRESSED = True

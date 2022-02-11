@@ -8,16 +8,16 @@ def process(file: str):
     analyzer = Analyzer(file,
                         stimulus_marker_name='Stimulus_Markers',
                         gaze_name='TobiiGaze')
-    analyzer.calculate_distance()
-    analyzer.calculate_dispersion()
-    analyzer.calculate_velocity()
-    analyzer.plot()
+    analyzer.analyze()
+
+    # Also do the dispersion of the brightness condition
+    analyzer.calculate_dispersion(phase='brightness')
     print(f"\t{file}: took: {time.perf_counter() - start_time:.2f}s")
 
 def main():
-    pt_files = glob('data/pt*/*.xdf')
+    files = glob('data/pt*/*.xdf')
     with mp.Pool() as pool:
-        pool.map(process, pt_files)
+        pool.map(process, files)
 
 if __name__ == '__main__':
     main()
