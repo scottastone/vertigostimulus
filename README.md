@@ -23,7 +23,9 @@ There is a conda environment YAML file included [`environment.yml`](environment.
 The default name for the environment is `stroke`.
 
 ## Running
-Simply run `python run_stimulus.py` in the conda environment.
+Equip the eyetracker, and run the Pupil Labs recorder program. Ensure the LSL plugin is active.
+Open a terminal and make sure you are in the `stroke` conda evironment: `conda activate stroke`
+Then, run `python run_stimulus.py`
 
 ### Questions
 If you have any questions, please email me: sastone@ualberta.ca
