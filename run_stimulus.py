@@ -1,6 +1,5 @@
 # Copyright 2022
 # Author: scott.allan.stone@gmail.com (Scott Stone)
-
 from io import TextIOWrapper
 import pygame, os
 from pygame.locals import *
@@ -10,6 +9,9 @@ import numpy as np
 from time import sleep
 import liesl
 from sys import exit
+
+# "The Doctor with 2 Hands" vertigo stimulus presentation and recording program.
+# Check the README.md file for more information.
 
 DEBUG_FLAG = False
 def main():
