@@ -1,6 +1,6 @@
 # Vertigo Nystagmus Stroke assessment stimulus presentation
 
-
+[![Python 3.9](https://img.shields.io/badge/python-3.9-blue.svg)](https://www.python.org/downloads/release/python-397/)
 
 This is the stroke assessment stimulus and data recording software. It takes about ~5m to run, depending on how long it takes to position the glasses. *If you're not sure what this is, you're probably in the wrong place.*
 
