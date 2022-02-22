@@ -481,3 +481,5 @@ if __name__ == '__main__':
     print("Stopping LSL recording ...")
     r.stop_recording()
     sleep(0.5)
+
+    print("Stopped. Safe to close!")
