@@ -5,7 +5,7 @@
 This is the stroke assessment stimulus and data recording software. It takes about ~5m to run, depending on how long it takes to position the glasses. *If you're not sure what this is, you're probably in the wrong place.*
 
 ---
-There are 5 parts to the assessment:
+## Assessment:
 1. **Stare**
 The participant stares at a cross in the centre of the screen for 20s.
 2. **Pursuit**
