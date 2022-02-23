@@ -5,7 +5,6 @@ import liesl
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.patches import Ellipse
-from pandas import set_eng_float_format
 
 class Analyzer:
     def __init__(self, 
@@ -160,7 +159,7 @@ class Analyzer:
 
         plt.clf()
 
-    def calculate_frequency(self) -> None:
+    def calculate_frequency(self, cutoff=5) -> None:
         """Calculate the nystagmus frequency of gaze data for each phase
         """
 
@@ -181,7 +180,7 @@ class Analyzer:
             yf_y = yf_y[:int(N/2)]
             xf = np.fft.fftfreq(N, T)[:N//2]
 
-            freq_idx = np.where((xf <= 5) & (xf > 0)) # cut of 0hz and above 5hz
+            freq_idx = np.where((xf <= cutoff) & (xf > 0)) # cut of 0hz and above 5hz
             plt.plot(xf[freq_idx], yf_x[freq_idx])
             plt.plot(xf[freq_idx], yf_y[freq_idx])
             plt.legend(['x', 'y'])
