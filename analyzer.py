@@ -1,7 +1,9 @@
+from msilib.schema import Error
 import liesl
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.patches import Ellipse
+from pandas import set_eng_float_format
 
 class Analyzer:
     def __init__(self, 
@@ -10,23 +12,47 @@ class Analyzer:
                  gaze_name: str,
                  phases: str = None,
                  dpi: int = 300):
+
         self.file = file
         self.stimulus_marker_name = stimulus_marker_name
         self.gaze_name = gaze_name
         self.data = liesl.XDFFile(file, verbose=True) # verbose is broken
+        self.sample_rate = self.data[self.gaze_name]._stream['info']['effective_srate']
         self.phases = phases # default to None
-        self.dpi = dpi
+        self.dpi = dpi # default to 300, for image output
 
         self._pull_marker_data()
         self._find_start_end_phase_indices()
         self._convert_idx_to_timestamps()
         self._get_gaze_data()
         self._get_gaze_by_phase()
+        valid = self._verify_integrity
+        if valid is False:
+            raise Error("\tData integrity check failed")
+        else:
+            print(f"\tData validity passed. Found {len(self.phases)} phases and {len(self.gaze_data)} gaze chunks.")
 
-    def _verify_integrity(self) -> None:
-        # TODO: Verify that the data is correct
-        # Should contain: markers, gaze, timestamps, phase_starts, phase_ends
-        return NotImplementedError
+    def _verify_integrity(self) -> bool:
+        """Verify that we have all of the data (5 streams)
+        Checks if: 
+            - There are 5 streams
+            - There are the correct number of markers
+            - There are the correct number of gaze chunks
+            - The 
+        """
+        if len(self.data) != len(self.phases):
+            return False
+
+        for stream in zip(self.data, self.phases):
+            gaze, phase = stream
+            # Check if gaze has any data in it
+            if len(gaze) == 0:
+                return False
+            # Check if the phase has any data in it
+            if len(phase) == 0:
+                return False
+
+        return True
 
     def _pull_marker_data(self) -> None:
         """Pull the data from the file and store it
@@ -71,9 +97,10 @@ class Analyzer:
         """
         self.gaze_data = []
         for idx in zip(self.gaze_timestamps_start, self.gaze_timestamps_end):
-            self.gaze_data.append(self.gaze.time_series[idx[0]:idx[1], 1:3])
+            start, end = idx
+            self.gaze_data.append(self.gaze.time_series[start:end, 1:3])
 
-    def calculate_velocity(self, save=True, show=False):
+    def calculate_velocity(self, save=True, show=False) -> None:
         """Calculate the velocity of gaze data for each phase
         """
         self.velocity = []
@@ -131,6 +158,37 @@ class Analyzer:
             plt.show()
 
         plt.clf()
+
+    def calculate_frequency(self) -> None:
+        """Calculate the nystagmus frequency of gaze data for each phase
+        """
+
+        for i in zip(self.gaze_data, self.phases):
+            # Get the stare data from the gaze
+            gaze, phase = i
+            print(f'\tCalculating frequency for {phase} data')
+
+            gaze_x, gaze_y = gaze[:, 0], gaze[:, 1]
+
+            # Calculate the nystagmus frequency using the FFT of the gaze data
+            N = len(gaze)
+            T = 1 / self.sample_rate
+
+            yf_x = np.abs(np.fft.fft(gaze[:, 0]))
+            yf_x = yf_x[:int(N/2)]
+            yf_y = np.abs(np.fft.fft(gaze[:, 1]))
+            yf_y = yf_y[:int(N/2)]
+            xf = np.fft.fftfreq(N, T)[:N//2]
+
+            freq_idx = np.where((xf <= 5) & (xf > 0)) # cut of 0hz and above 5hz
+            plt.plot(xf[freq_idx], yf_x[freq_idx])
+            plt.plot(xf[freq_idx], yf_y[freq_idx])
+            plt.legend(['x', 'y'])
+            plt.title(f'Frequency decomposition of {phase} data')
+            plt.ylabel('Power')
+            plt.xlabel('Frequency (Hz)')
+            plt.savefig(f'{self.file[:-4]}_{phase}_frequency.png', dpi=self.dpi)
+            plt.clf()
 
     def plot(self, save=True, show=False) -> None:
         """Plot gaze data for each phase (and save it if wanted)
