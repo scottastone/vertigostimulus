@@ -12,6 +12,7 @@ def process(file: str):
 
     # Also do the dispersion of the brightness condition
     analyzer.calculate_dispersion(phase='brightness')
+    analyzer.calculate_frequency()
     print(f"\t{file}: took: {time.perf_counter() - start_time:.2f}s")
 
 def main():
