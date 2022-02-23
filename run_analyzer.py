@@ -1,3 +1,5 @@
+# Copyright 2022
+# Author: scott.allan.stone@gmail.com (Scott Stone)
 from analyzer import Analyzer
 from glob import glob
 import multiprocessing as mp

@@ -1,3 +1,5 @@
+# Copyright 2022
+# Author: scott.allan.stone@gmail.com (Scott Stone)
 from msilib.schema import Error
 import liesl
 import numpy as np
@@ -38,7 +40,6 @@ class Analyzer:
             - There are 5 streams
             - There are the correct number of markers
             - There are the correct number of gaze chunks
-            - The 
         """
         if len(self.data) != len(self.phases):
             return False
