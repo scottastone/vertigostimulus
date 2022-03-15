@@ -20,12 +20,20 @@ While fixating on the centre cross, the background will change from black to whi
 ## Conda environment
 There is a conda environment YAML file included [`environment.yml`](environment.yml) that you can use. It will use the [`requirements.txt`](requirements.txt) file to get the dependencies.
 
+To do this, run:
+`conda env create -f environment.yml`
+
 The default name for the environment is `stroke`.
 
 ## Running
 Equip the eyetracker, and run the Pupil Labs recorder program. Ensure the LSL plugin is active.
 Open a terminal and make sure you are in the `stroke` conda evironment: `conda activate stroke`
 Then, run `python run_stimulus.py`
+
+The other way to run the stimulus is to open a command prompt or terminal that can see `conda` (make sure it's added to your system path) and run:
+`./run.bat`
+
+This will enter the `stroke` conda environment and run the `run_stimulus.py` script. Note that there is no error-checking right now, so it will not exit gracefully.
 
 ### Questions
 If you have any questions, please email me: sastone@ualberta.ca
