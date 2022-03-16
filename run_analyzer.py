@@ -9,12 +9,12 @@ def process(file: str):
     start_time = time.perf_counter()
     analyzer = Analyzer(file,
                         stimulus_marker_name='Stimulus_Markers',
-                        gaze_name='TobiiGaze')
+                        gaze_name='pupil_capture')
     analyzer.analyze()
 
     # Also do the dispersion of the brightness condition
     analyzer.calculate_dispersion(phase='brightness')
-    analyzer.calculate_frequency()
+    #analyzer.calculate_frequency()
     print(f"\t{file}: took: {time.perf_counter() - start_time:.2f}s")
 
 def main():

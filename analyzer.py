@@ -98,7 +98,7 @@ class Analyzer:
         self.gaze_data = []
         for idx in zip(self.gaze_timestamps_start, self.gaze_timestamps_end):
             start, end = idx
-            self.gaze_data.append(self.gaze.time_series[start:end, 1:3])
+            self.gaze_data.append(self.gaze.time_series[start:end, -4:])
 
     def calculate_velocity(self, save=True, show=False) -> None:
         """Calculate the velocity of gaze data for each phase
@@ -147,8 +147,10 @@ class Analyzer:
         # Draw ellipsoid of the dispersion
         plt.figure()
         plt.title(f"Dispersion of {phase} data")
-        plt.plot(gaze[:, 0], gaze[:, 1])
+        plt.plot(gaze[:, 0], gaze[:, 1], 'r')
+        plt.plot(gaze[:, 2], gaze[:, 3], 'b')
         plt.plot(self.mean_gaze[0], self.mean_gaze[1], '.k')
+        plt.plot(self.mean_gaze[2], self.mean_gaze[3], '.k') # other eye
         ellipse = Ellipse((self.mean_gaze), self.dispersion_x, self.dispersion_y, fill=False, color='r')
         plt.gca().add_patch(ellipse)
 
@@ -194,7 +196,8 @@ class Analyzer:
         """Plot gaze data for each phase (and save it if wanted)
         """
         for gaze_data, phase in zip(self.gaze_data, self.phases):
-            plt.plot(gaze_data[:, 0], gaze_data[:, 1], label=phase)
+            plt.plot(gaze_data[:, 0], gaze_data[:, 1], label=phase, marker='.', color='r')
+            plt.plot(gaze_data[:, 2], gaze_data[:, 3], label=phase, marker='.', color='b')
             plt.title(phase)
             if save is True:
                 plt.savefig(f'{self.file[:-4]}_{phase}.png', dpi=self.dpi)
@@ -206,7 +209,7 @@ class Analyzer:
         """Simple alias to run all of the calculations and plotting commands, since this 
            is the most common use case.
         """
-        self.calculate_dispersion()
+        self.calculate_dispersion(phase='stare')
         self.calculate_distance()
         self.calculate_velocity()
         self.plot()
