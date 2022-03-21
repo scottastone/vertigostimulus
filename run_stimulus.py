@@ -12,8 +12,6 @@ from sys import exit
 
 # "The Doctor with 2 Hands" vertigo stimulus presentation and recording program.
 # Check the README.md file for more information.
-
-DEBUG_FLAG = False
 def main():
     '''
     Main function for the program
@@ -45,7 +43,8 @@ def main():
     # Constants
     BRIGHTNESS_TRIAL_LENGTH = 10 # This can be shorter than the main trial length
     SCREEN_CENTRE = (WIDTH/2, HEIGHT/2)
-    STIM_ORDER = ['stare', 'pursuit', 'vor', 'jump', 'brightness']
+    #STIM_ORDER = ['stare', 'pursuit', 'vor', 'jump', 'brightness']
+    STIM_ORDER = ['vor', 'jump', 'brightness']
     
     '''
     Main execution loop
@@ -293,7 +292,6 @@ def main():
                         for _ in range(0, int(ONE_SEC_FRAMES/2)):
                             clock.tick(FPS)
                         
-
                     outlet.push_sample(["pursuit_" + dir + "_end"])
         
             '''
@@ -310,6 +308,17 @@ def main():
                 
                 # The user picks how long they want to do this one
                 wait_for_space()
+
+                # Add the ability to redo the trial
+                global REDO_TRIAL
+                if REDO_TRIAL == True:
+                    REDO_TRIAL = False
+                    print('Redoing trial: vor')
+                    outlet.push_sample(["redo_trial"])
+                    outlet.push_sample([stim])
+                    draw_fixation_cross()
+                    pygame.display.flip()
+                    wait_for_space()
 
             '''
             Jump condition
@@ -400,12 +409,16 @@ def wait_for_space():
     ''' 
     Wait for the user to press the spacebar before continuing.
     Used between trials.
+    TODO: add an ability to redo the current trial: currently not working
     '''
+    global REDO_TRIAL
     KEY_NOT_PRESSED = True
     while KEY_NOT_PRESSED:
         for event in pygame.event.get():
             if event.type == KEYDOWN and event.key == K_SPACE:
                 KEY_NOT_PRESSED = False
+            if event.type == KEYDOWN and event.key == K_r:
+                REDO_TRIAL = True
 
 def generate_subject_name(date: datetime):
     '''
@@ -444,6 +457,10 @@ def write_data_csv(file: TextIOWrapper, data):
 if __name__ == '__main__':
     # Do some house cleaning around the current subject
     # Create their folder in the "data/" directory
+    global REDO_TRIAL
+    REDO_TRIAL = False
+    DEBUG_FLAG = False
+
     if not os.path.exists('data'):
         print("No data folder found. Creating one ...")
         os.mkdir("data")
